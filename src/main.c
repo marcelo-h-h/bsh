@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/bsh.h"
+#include "../include/parser/parser.h"
 
 void version()
 {
