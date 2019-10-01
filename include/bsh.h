@@ -1,0 +1,8 @@
+#ifndef BSH_PUBLIC
+#define BSH_PUBLIC
+
+#define BSH_VERSION_MAJOR 0
+#define BSH_VERSION_MINOR 0
+#define BSH_VERSION_PATCH 1
+
+#endif
