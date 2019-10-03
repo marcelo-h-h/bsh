@@ -12,6 +12,7 @@ void  loop();
 int   run_cmd(cmd_t*);
 int   run_exec_cmd(exec_cmd_t*);
 int   run_fork_cmd(fork_cmd_t*);
+int   run_redi_cmd(redi_cmd_t*);
 int   add_to_jobs(pid_t);
 int   check_builtins(string_t);
 int   cd(string_t*);

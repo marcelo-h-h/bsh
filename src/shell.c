@@ -72,6 +72,9 @@ int run_cmd(cmd_t* cmd)
       return run_exec_cmd((exec_cmd_t*) cmd);
     case FORK:
       return run_fork_cmd((fork_cmd_t*) cmd);
+    case RINP:
+    case ROUT:
+      return run_redi_cmd((redi_cmd_t*) cmd);
     default:
       return EXIT_FAILURE;
   }
@@ -131,6 +134,11 @@ int run_fork_cmd(fork_cmd_t* cmd)
   }
 }
 
+int run_redi_cmd(redi_cmd_t* cmd)
+{
+  
+}
+
 int add_to_jobs(pid_t pid)
 {
   int i;
@@ -187,7 +195,25 @@ int jobs(string_t* args)
 
 int fg(string_t* args)
 {
-  
+  pid_t pid;
+  int status;
+  int i = atoi(args[1]);
+
+  if (i <= job_arr_sz) {
+    pid = job_arr[i - 1];
+
+
+    if (pid > 0) {
+      do {
+        waitpid(pid, &status, WUNTRACED);
+      } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+      return status;
+    }
+  }
+
+  printf("Job doesn't exist\n");
+  return EXIT_FAILURE;
 }
 
 int bg(string_t* args)
