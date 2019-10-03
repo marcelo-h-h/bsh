@@ -177,12 +177,20 @@ int check_builtins(string_t cmd)
 
 int cd(string_t* args)
 {
-  return chdir(args[1]);
+  if (args[1] != NULL) {
+    return chdir(args[1]);
+  }
+
+  return EXIT_SUCCESS;
 }
 
 int exit_sh(string_t* args)
 {
-  exit(atoi(args[1]));
+  if (args[1] != NULL) {
+    exit(atoi(args[1]));
+  }
+  
+  exit(0);
 }
 
 int jobs(string_t* args)
@@ -202,17 +210,21 @@ int fg(string_t* args)
 {
   pid_t pid;
   int status;
-  int i = atoi(args[1]);
+  int i;
 
-  if (i <= job_arr_sz) {
-    pid = job_arr[i - 1];
+  if (args[1] != NULL) {
+    i = atoi(args[1]);
 
-    if (pid > 0) {
-      do {
-        waitpid(pid, &status, WUNTRACED);
-      } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    if (i <= job_arr_sz) {
+      pid = job_arr[i - 1];
 
-      return status;
+      if (pid > 0) {
+        do {
+          waitpid(pid, &status, WUNTRACED);
+        } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+
+        return status;
+      }
     }
   }
 
