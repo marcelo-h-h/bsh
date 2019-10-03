@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "../include/bsh.h"
-#include "../include/parser/parser.h"
+#include "../include/shell/shell.h"
 
 void version()
 {
@@ -10,14 +10,9 @@ void version()
 
 int main(int argc, char* argv[])
 {
-  printf("~ We have to start somewhere ~\n");
   version();
 
-  string_t line = get_line();
-  string_t* args = split_line(line);
-  cmd_t* cmd = parse_args(args);
-
-  printf("%d\n", cmd->type);
+  loop();
 
   return EXIT_SUCCESS;
 }
