@@ -2,6 +2,7 @@
 #define PARSER_DATATYPES
 
 #define FORK_STR "&"
+#define PIPE_STR "|"
 
 typedef char* string_t;
 
@@ -12,7 +13,8 @@ typedef enum {
 
 typedef enum {
   EXEC,
-  FORK
+  FORK,
+  PIPE
 } cmd_type_t;
 
 typedef struct {
@@ -28,5 +30,11 @@ typedef struct {
   cmd_type_t  type;
   cmd_t*      left;
 } fork_cmd_t;
+
+typedef struct {
+  cmd_type_t  type;
+  cmd_t*      left;
+  cmd_t*      right;
+} pipe_cmd_t;
 
 #endif

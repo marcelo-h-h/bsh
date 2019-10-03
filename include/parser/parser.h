@@ -11,6 +11,7 @@ string_t* split_line(string_t);
 
 cmd_t*    parse_args(string_t*);
 cmd_t*    parse_fork(string_t**);
+cmd_t*    parse_pipe(string_t**);
 cmd_t*    parse_exec(string_t**);
 
 #endif
