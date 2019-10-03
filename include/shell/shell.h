@@ -1,11 +1,13 @@
 #ifndef SHELL_PUBLIC
 #define SHELL_PUBLIC
 
+#include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include "../parser/parser.h"
 
+int  check_children();
 void  loop();
 int   run_cmd(cmd_t*);
 int   run_exec_cmd(exec_cmd_t*);

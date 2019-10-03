@@ -11,19 +11,38 @@ const void* builtin_func[] = {
   &exit_b
 };
 
+int check_children()
+{
+  int status;
+  int ret;
+
+  do {
+    ret = waitpid(-1, &status, WNOHANG);
+
+    if (ret > 0) {
+      printf("[%d]+ Concluído\t%d\n", 1, ret);
+    }
+  } while (ret > 0);
+
+  return status;
+}
+
 void loop()
 {
   string_t line;
   string_t* args;
   string_t* tmp_arg;
   cmd_t* cmd;
+  int status;
+
   for (;;) {
+    status = check_children();
     printf("$ ");
     line = get_line();
     args = split_line(line);
     cmd = parse_args(args);
 
-    run_cmd(cmd);
+    status = run_cmd(cmd);
 
     free(line);
     free(args);
