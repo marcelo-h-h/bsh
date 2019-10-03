@@ -1,5 +1,16 @@
 #include "../include/shell/shell.h"
 
+const string_t builtin_str[] = {
+  "cd",
+  "exit",
+  NULL
+};
+
+const void* builtin_func[] = {
+  &cd,
+  &exit_b
+};
+
 void loop()
 {
   string_t line;
@@ -35,12 +46,20 @@ int run_exec_cmd(exec_cmd_t* cmd)
 {
   pid_t pid;
   int status;
+  int (*f)(string_t*);
+  int i = check_builtins(cmd->argv[0]);
+
+  if (i >= 0) {
+    f = builtin_func[i];
+    return f(cmd->argv);
+  }
 
   pid = fork();
 
   if (pid < 0) {
     return EXIT_FAILURE;
   } else if (pid == 0) {
+
     if (execvp(cmd->argv[0], cmd->argv) != 0) {
       return EXIT_FAILURE;
     }
@@ -72,4 +91,28 @@ int run_fork_cmd(fork_cmd_t* cmd)
 
     return EXIT_SUCCESS;
   }
+}
+
+int check_builtins(string_t cmd)
+{
+  int i = 0;
+  while (builtin_str[i] != NULL) {
+    if (strcmp(cmd, builtin_str[i]) == 0) {
+      return i;
+    }
+
+    i++;
+  }
+
+  return -1;
+}
+
+int cd(string_t* args)
+{
+  return chdir(args[1]);
+}
+
+int exit_b(string_t* args)
+{
+  exit(atoi(args[1]));
 }
