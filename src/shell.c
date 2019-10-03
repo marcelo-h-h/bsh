@@ -22,6 +22,7 @@ const void* builtin_func[] = {
 
 int check_children()
 {
+  struct task_struct *task = NULL;
   int status;
   int ret;
   int i;
@@ -67,6 +68,10 @@ void loop()
 
 int run_cmd(cmd_t* cmd)
 {
+  if (cmd == NULL) {
+    return EXIT_SUCCESS;
+  }
+
   switch (cmd->type) {
     case EXEC:
       return run_exec_cmd((exec_cmd_t*) cmd);
@@ -202,7 +207,6 @@ int fg(string_t* args)
   if (i <= job_arr_sz) {
     pid = job_arr[i - 1];
 
-
     if (pid > 0) {
       do {
         waitpid(pid, &status, WUNTRACED);
@@ -218,5 +222,21 @@ int fg(string_t* args)
 
 int bg(string_t* args)
 {
+  pid_t pid;
+  int i;
 
+  if (args[1] != NULL) {
+    i = atoi(args[1]);
+
+    if (i <= job_arr_sz) {
+      pid = job_arr[i - 1];
+
+      if (pid > 0) {
+        return kill(pid, SIGCONT);
+      }
+    }
+  }
+
+  printf("Job doesn't exist\n");
+  return EXIT_FAILURE;
 }
