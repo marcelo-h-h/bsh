@@ -141,7 +141,39 @@ int run_fork_cmd(fork_cmd_t* cmd)
 
 int run_redi_cmd(redi_cmd_t* cmd)
 {
-  
+   int status;
+  pid_t pid = fork();
+
+  if (pid < 0) {
+    return EXIT_FAILURE;
+
+  } else if (pid == 0) {
+    string_t path = cmd->file;
+
+    if(cmd->type == ROUT) {
+
+      if(path != NULL && strlen(path) > 1) {
+
+        FILE * fd = fopen(path ,"w");
+        int fd_n = fileno(fd);
+        dup2(fd_n, 1);
+
+        exec_cmd_t* ecmd = (exec_cmd_t*) cmd->left;
+        if (execvp(ecmd->argv[0], ecmd->argv) != 0) {
+          _exit(-1);
+          return EXIT_FAILURE;
+        }
+
+        return EXIT_SUCCESS;
+      }
+      printf("Arquivo especificado inválido");
+      return EXIT_FAILURE;
+    }
+  } 
+    do {
+      waitpid(pid, &status, WUNTRACED);
+    } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    return status;
 }
 
 int add_to_jobs(pid_t pid)
